@@ -130,7 +130,7 @@ function App() {
       <label for="Tip">Tip:</label>
       <input type="text" id="Tip"></input>
 
-      <p><b>Price: {count}</b></p>
+      <p><b>Total Price: ${count}</b></p>
 
       <input type="button" className="orderButton" value="Place Order"></input>
 
