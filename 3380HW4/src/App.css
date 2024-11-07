@@ -153,6 +153,11 @@ ul{
   background-color: teal;
 }
 
+.clearButton
+{
+  background-color: #500000;
+}
+
 .BottomText {
   color: #888;
   position: fixed;
