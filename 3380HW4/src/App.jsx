@@ -78,6 +78,9 @@ function App() {
           <p><b>Total Price: ${(count*1.0825).toFixed(2)}</b></p>
 
           <button className="orderButton">Place Order</button>
+
+          <button className="testerButton">Test DB</button>
+
         </div>
 
         <img src="public/ER.PNG" className="ER" alt="ER Diagram" />
