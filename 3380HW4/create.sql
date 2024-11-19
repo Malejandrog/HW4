@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS TransactionInfo;
+DROP TABLE IF EXISTS PaymentInfo;
+DROP TABLE IF EXISTS OrderInfo;
+DROP TABLE IF EXISTS RestaurantLocation;
+DROP TABLE IF EXISTS BankAccount;
+DROP TABLE IF EXISTS Customer;
+
 CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY,
     CustomerName VARCHAR(50), --Changed from ERD due to Naming Conflict
@@ -44,7 +51,6 @@ CREATE TABLE PaymentInfo (
     BillingAddress VARCHAR(50),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
-
 
 CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflict?
     TransactionID INT PRIMARY KEY,

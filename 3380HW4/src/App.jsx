@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
+import cors from 'cors';
 //import { Flex, FormControl, FormLabel } from '@chakra-ui/react'
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,9 +33,24 @@ function App() {
     setCount(0);
   };
 
-  const TestDB = () => {
-    console.log('TestDB function executed');
-    
+  const TestDB = async () => {
+    try {
+      // Send a POST request to the server
+      const response = await fetch('http://127.0.0.1:5000/api/test-db', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('Command executed successfully');
+      } else {
+        console.error('Error executing command');
+      }
+    } catch (error) {
+      console.error('Request failed', error);
+    }
   };
 
   return (
@@ -84,7 +101,7 @@ function App() {
 
           <button className="orderButton">Place Order</button>
 
-          <button onclick={TestDB} className="testerButton">Test DB</button>
+          <button onClick={TestDB} className="testerButton">Test DB</button>
 
         </div>
 
