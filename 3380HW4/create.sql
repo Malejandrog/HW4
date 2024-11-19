@@ -1,7 +1,7 @@
 CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY,
     CustomerName VARCHAR(50), --Changed from ERD due to Naming Conflict
-    PhoneNumber VARCHAR(50),
+    CustomerPhoneNumber VARCHAR(50), --Changed to differentiate Customer/Restaurant numbers
     HasLoyaltyCard BOOLEAN
 );
 
@@ -11,6 +11,7 @@ CREATE TABLE BankAccount (
     BankName VARCHAR(50),
     AccountNumber INT,
     AccountType VARCHAR(50),
+    Balance DECIMAL
 );
 
 CREATE TABLE Order (
@@ -18,9 +19,9 @@ CREATE TABLE Order (
     LocationID INT,
     CustomerID INT,
     OrderDate DATE, --Changed from ERD due to Naming Conflict
-    TotalAmount FLOAT,
-    TaxAmount FLOAT,
-    TipAmount FLOAT,
+    TotalAmount DECIMAL,
+    TaxAmount DECIMAL,
+    TipAmount DECIMAL,
     PaymentMethod VARCHAR(50),
     FOREIGN KEY (LocationID) REFERENCES RestaurantLocation(LocationID),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
@@ -41,16 +42,16 @@ CREATE TABLE RestaurantLocation (
     LocationAddress VARCHAR(50), --Changed from ERD due to Naming Conflict
     City VARCHAR(50),
     USState VARCHAR(50), --Changed from ERD due to Naming Conflict
-    PhoneNumber INT
+    RestaurantPhoneNumber VARCHAR(50) --Changed to differentiate Customer/Restaurant numbers
 );
 
 CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflict?
     TransactionID INT PRIMARY KEY,
     OrderID INT,
     AccountID INT, --Fixed from ERD? Said CustomerAccountID on ERD.
-    --RestarauntAccountID - Not sure what this is refering to in the ERD, possbily LocationID?
+    RestaurantAccountID INT, -- Modify later to be Foreign Key based on Tommy's requirements
     TransactionDate DATE,
-    PaymentAmount FLOAT,
+    PaymentAmount DECIMAL,
     FOREIGN KEY (OrderID) REFERENCES Order(OrderID),
     FOREIGN KEY (AccountID) REFERENCES BankAccount(AccountID)
 );

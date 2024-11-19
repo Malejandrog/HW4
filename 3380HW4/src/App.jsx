@@ -83,7 +83,7 @@ function App() {
 
         </div>
 
-        <img src="public/ER.PNG" className="ER" alt="ER Diagram" />
+        <img src="public/ER2.PNG" className="ER" alt="ER Diagram" />
       </div>
     </>
   );
