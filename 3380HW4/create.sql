@@ -14,7 +14,15 @@ CREATE TABLE BankAccount (
     Balance DECIMAL
 );
 
-CREATE TABLE Order (
+CREATE TABLE RestaurantLocation (
+    LocationID INT PRIMARY KEY,
+    LocationAddress VARCHAR(50), --Changed from ERD due to Naming Conflict
+    City VARCHAR(50),
+    USState VARCHAR(50), --Changed from ERD due to Naming Conflict
+    RestaurantPhoneNumber VARCHAR(50) --Changed to differentiate Customer/Restaurant numbers
+);
+
+CREATE TABLE OrderInfo ( --Changed from ERD due to Naming Conflict
     OrderID INT PRIMARY KEY,
     LocationID INT,
     CustomerID INT,
@@ -37,13 +45,6 @@ CREATE TABLE PaymentInfo (
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
-CREATE TABLE RestaurantLocation (
-    LocationID INT PRIMARY KEY,
-    LocationAddress VARCHAR(50), --Changed from ERD due to Naming Conflict
-    City VARCHAR(50),
-    USState VARCHAR(50), --Changed from ERD due to Naming Conflict
-    RestaurantPhoneNumber VARCHAR(50) --Changed to differentiate Customer/Restaurant numbers
-);
 
 CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflict?
     TransactionID INT PRIMARY KEY,
@@ -52,6 +53,6 @@ CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflic
     RestaurantAccountID INT, -- Modify later to be Foreign Key based on Tommy's requirements
     TransactionDate DATE,
     PaymentAmount DECIMAL,
-    FOREIGN KEY (OrderID) REFERENCES Order(OrderID),
+    FOREIGN KEY (OrderID) REFERENCES OrderInfo(OrderID),
     FOREIGN KEY (AccountID) REFERENCES BankAccount(AccountID)
 );
