@@ -31,6 +31,11 @@ function App() {
     setCount(0);
   };
 
+  const TestDB = () => {
+    console.log('TestDB function executed');
+    
+  };
+
   return (
     <>
       <div className='topBar'>
@@ -79,7 +84,7 @@ function App() {
 
           <button className="orderButton">Place Order</button>
 
-          <button className="testerButton">Test DB</button>
+          <button onclick={TestDB} className="testerButton">Test DB</button>
 
         </div>
 

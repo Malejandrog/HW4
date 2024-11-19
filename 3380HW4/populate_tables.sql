@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Insert data into Customer
 INSERT INTO Customer (CustomerID, CustomerName, CustomerPhoneNumber, HasLoyaltyCard)
 VALUES
@@ -45,3 +47,5 @@ VALUES
     (2, 2, 2, 11, '2024-11-16', 97.50),
     (3, 3, 3, 12, '2024-11-17', 130.00),
     (4, 4, 4, 13, '2024-11-18', 32.50);
+
+COMMIT;
