@@ -58,7 +58,7 @@ function App() {
 
   const TestDB = async () => {
     try {
-        const response = await axios.post('http://172.19.155.78:5000/start-function');
+        const response = await axios.post('http://XXX.XX.XXX.XX:5000/start-function');
         console.log(response.data.message); // Logs "Function executed successfully!"
     } catch (error) {
         console.error('Error calling the backend:', error);
