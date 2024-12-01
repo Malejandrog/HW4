@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import './App.css'
 import axios from 'axios';
-//import { Flex, FormControl, FormLabel } from '@chakra-ui/react'
-
 
 function App() {
   const [count, setCount] = useState(0);
@@ -32,29 +30,6 @@ function App() {
     setOrderItems([]);
     setCount(0);
   };
-
-  /* const TestDB = async () => {
-    try {
-      // Send a POST request to the server
-      const response = await fetch('http://127.0.0.1:5000/api/test-db', 
-        {
-        method: 'POST',
-        headers: 
-        {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Command executed successfully', data);
-      } else {
-        console.error('Error executing command');
-      }
-    } catch (error) {
-      console.error('Request failed', error);
-    }
-  }; */
 
   const TestDB = async () => {
     try {
@@ -94,17 +69,70 @@ function App() {
 
           <button onClick={clearOrder} className="clearButton">Clear Order</button>
 
-          <label htmlFor="CCInfo">Credit Card Number:</label>
-          <input type="text" id="CCInfo" />
+          <label htmlFor="Locations">Select a Location:</label>
+          <select name="Locations" id="Locations">
+            <option value="" selected disabled>Select a city</option>
+            <option value="PHX">Phoenix, AZ</option>
+            <option value="LA">Los Angeles, CA</option>
+            <option value="SDE">San Diego, CA</option>
+            <option value="CHI">Chicago, IL</option>
+            <option value="NY">New York, NY</option>
+            <option value="PHI">Philadelphia, PA</option>
+            <option value="HOU">Houston, TX</option>
+            <option value="SAT">San Antonio, TX</option>
+          </select>
+
+        <div className='CustomerName'>
+          <label htmlFor="FirstName" >First Name:</label>
+          <input type="text" id="FirstName" />
+
+          <label htmlFor="LastName">Last Name:</label>
+          <input type="text" id="LastName" />
+        </div>
+
+        <div className='CustomerInfo'>
+          <label htmlFor="PhoneNumber">Phone Number:</label>
+          <input type="text" id="PhoneNumber" />
+
+          <label htmlFor="LoyaltyCard">Loyalty Card:</label>
+          <select name="LoyaltyCard" id="LoyaltyCard">
+            <option value="" selected disabled>LoyaltyCard</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        
+        <div className='CustomerAddress'>
+          <label htmlFor="Address">Address:</label>
+          <input type="text" id="Address" />
+
+          <label htmlFor="City">City:</label>
+          <input type="text" id="City" />
+
+          <label htmlFor="State">State:</label>
+          <input type="text" id="State" />
+        </div>
+
+          <label htmlFor="PaymentMethod">Payment Method:</label>
+          <select name="PaymentMethod" id="PaymentMethod">
+            <option value="" selected disabled>Payment:</option>
+            <option value="Credit">Credit</option>
+            <option value="Debit">Debit</option>
+            <option value="GiftCard">Gift Card</option>
+          </select>
+
+        <div className='CCInfo'>
+          <label htmlFor="CCNum">Credit Card Number:</label>
+          <input type="text" id="CCNum" />
 
           <label htmlFor="CCV">CCV:</label>
           <input type="text" id="CCV" />
 
           <label htmlFor="CCDate">Exp. Date:</label>
-          <input type="text" id="CCDate" />
+          <input type="text" id="CCDate"/>
+        </div> 
 
-          <label htmlFor="Address">Address:</label>
-          <input type="text" id="Address" />
+          
 
           <label htmlFor="Tip">Tip:</label>
           <input type="text" id="Tip" />

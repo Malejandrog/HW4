@@ -19,7 +19,6 @@ const app = express();
 // Middleware
 app.use(express.json()); // Parse incoming JSON requests
 app.use(cors());
-//app.use(cors({origin: 'http://127.0.0.1:5173',}));
 
 app.get('/', (req, res) => {
   res.send('Hello, World! The server is working.');
@@ -77,12 +76,6 @@ const createTables = () => {
 
 // Run the SQL script automatically when the server starts
 createTables();
-
-/* app.post('/start-function', (req, res) => {
-  console.log('Function started by frontend!');
-  // Your function logic here
-  res.status(200).send({ message: 'Function executed successfully!' });
-}); */
 
 app.post('/start-function', (req, res) => {
   console.log('Function started by frontend!');

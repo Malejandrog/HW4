@@ -94,6 +94,124 @@ h2 {
   box-sizing: border-box;
 }
 
+#FirstName
+{
+  width: 100px;
+  margin-right: 10px;
+}
+
+label[for='FirstName']
+{
+  margin-right: 5px;
+}
+
+#LastName
+{
+  width: 100px;
+  margin-right: 10px;
+}
+
+label[for='LastName']
+{
+  margin-right: 5px;
+}
+
+#PhoneNumber
+{
+  width: 100px;
+  margin-right: 10px;
+}
+
+label[for='PhoneNumber']
+{
+  margin-right: 5px;
+}
+
+#LoyaltyCard
+{
+  width: 50px;
+  margin-right: 10px;
+  left: 10px;
+}
+
+label[for='LoyaltyCard']
+{
+  margin-right: 5px;
+}
+
+#Address
+{
+  width: 150px;
+  margin-right: 10px;
+}
+
+label[for='Address']
+{
+  margin-right: 5px;
+}
+
+#City
+{
+  width: 100px;
+  margin-right: 10px;
+}
+
+label[for='City']
+{
+  margin-right: 5px;
+}
+
+#State
+{
+  width: 50px;
+  margin-right: 10px;
+}
+
+label[for='State']
+{
+  margin-right: 5px;
+}
+
+#CCNum
+{
+  width: 150px;
+  margin-right: 10px;
+}
+
+label[for='CCNum']
+{
+  margin-right: 5px;
+}
+
+#CCV
+{
+  width: 50px;
+  margin-right: 10px;
+}
+
+label[for='CCV']
+{
+  margin-right: 5px;
+}
+
+#CCDate
+{
+  width: 50px;
+  margin-right: 10px;
+}
+
+label[for='CCDate']
+{
+  margin-right: 5px;
+}
+
+#Tip
+{
+  width: 50px;
+  margin-right: 10px;
+}
+
+
 button.menuItem {
   display: flex;
   flex-direction: column;
@@ -141,8 +259,15 @@ button img {
   height: auto;
 }
 
-ul{
+ul {
+  text-align: left;
+  padding-left: 20px;
+  list-style-position: inside;
   margin-top: -10px;
+}
+
+li {
+  text-align: left;
 }
 
 .orderButton
