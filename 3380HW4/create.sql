@@ -18,7 +18,8 @@ CREATE TABLE Customer (
 
 CREATE TABLE BankAccount (
     AccountID INT PRIMARY KEY,
-    AccountHolderName VARCHAR(50),
+    AccountHolderFirstName VARCHAR(50),
+    AccountHolderLastName VARCHAR(50),
     BankName VARCHAR(50),
     AccountNumber INT,
     AccountType VARCHAR(50),
@@ -37,7 +38,7 @@ CREATE TABLE OrderInfo ( --Changed from ERD due to Naming Conflict
     OrderID INT PRIMARY KEY,
     LocationID INT,
     CustomerID INT,
-    OrderItems VARCHAR(9999) --Added 
+    OrderItems VARCHAR(9999), --Added 
     OrderDate DATE, --Changed from ERD due to Naming Conflict
     TotalAmount DECIMAL,
     TaxAmount DECIMAL,
@@ -100,7 +101,7 @@ VALUES
     (4, '101 Maple St', 'San Francisco', 'CA', '800-135-2468');
 
 -- Insert data into Order
-INSERT INTO OrderInfo (OrderID, LocationID, CustomerID, OrderItems OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod)
+INSERT INTO OrderInfo (OrderID, LocationID, CustomerID, OrderItems, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod)
 VALUES
     (1, 1, 1, 'The Databurger, Fries', '2024-11-15', 50.00, 5.00, 10.00, 'Credit Card'),
     (2, 2, 2, 'The Double Smash Patty, Fries, Fountain Drink', '2024-11-16', 75.00, 7.50, 15.00, 'Cash'),
