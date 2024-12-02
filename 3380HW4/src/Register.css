@@ -1,0 +1,87 @@
+/* Remove default margin and padding from html and body */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  /* Ensure the body has the correct background color */
+  body {
+    background-color: #242424;
+  }
+  
+  /* The root container should also take the full height */
+  #root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    height: 100%; /* Ensures it fills the full viewport */
+  }
+  
+  .topBar {
+    margin-left: 30px;
+  }
+  
+  .registerForm {
+    display: flex; /* Use Flexbox for layout */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Optional: Center vertically within the form */
+    align-items: center; /* Center align the children horizontally */
+    gap: 1rem; /* Add space between elements */
+    
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 2rem; /* Add some padding inside the form */
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    color: white; /* Ensure text is visible on dark background */
+    transition: border-color 0.25s;
+    width: 400px;
+    height: auto; /* Adjust height dynamically based on content */
+  }
+  
+  /* Input styles */
+  .registerForm input {
+    width: 100%; /* Make inputs take the full width of the form */
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2a2a2a;
+    color: white;
+  }
+  
+  /* Label styles */
+  .registerForm label {
+    align-self: flex-start; /* Align labels to the left */
+    font-size: 0.9rem;
+  }
+  
+  /* Button styles */
+  .registerForm .registerButton {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: teal;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.25s;
+  }
+  
+  .registerForm .registerButton:hover {
+    background-color: rgb(0, 90, 90);
+  }

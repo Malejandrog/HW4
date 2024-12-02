@@ -7,12 +7,12 @@ DROP TABLE IF EXISTS Customer;
 
 CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY,
-    CustomerFirstName VARCHAR(50), --Changed from ERD due to Naming Conflict
-    CustomerLastName VARCHAR(50), --Changed from ERD due to Naming Conflict
+    CustomerName VARCHAR(50), --Changed from ERD due to Naming Conflict
     CustomerAddress VARCHAR(50), --Added 
     CustomerCity VARCHAR(50), --Added 
     CustomerState VARCHAR(2), --Added 
     CustomerPhoneNumber VARCHAR(50), --Changed to differentiate Customer/Restaurant numbers
+    CustomerEmail VARCHAR(50),
     HasLoyaltyCard BOOLEAN
 );
 
@@ -20,7 +20,6 @@ CREATE TABLE BankAccount (
     AccountNumber INT PRIMARY KEY,
     AccountHolderFirstName VARCHAR(50),
     AccountHolderLastName VARCHAR(50),
-    BankName VARCHAR(50),
     AccountType VARCHAR(50),
     Balance DECIMAL
 );
