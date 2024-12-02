@@ -96,9 +96,8 @@ function App() {
 
           <label htmlFor="LoyaltyCard">Loyalty Card:</label>
           <select name="LoyaltyCard" id="LoyaltyCard">
-            <option value="" selected disabled>LoyaltyCard</option>
-            <option value="Yes">Yes</option>
             <option value="No">No</option>
+            <option value="Yes">Yes</option>
           </select>
         </div>
         
