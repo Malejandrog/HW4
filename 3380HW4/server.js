@@ -1,4 +1,3 @@
-// Import required modules
 import express from 'express';
 import pkg from 'pg';
 const { Pool } = pkg;
@@ -6,8 +5,6 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-
-
 
 // Get the directory name for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -17,8 +14,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(express.json()); // Parse incoming JSON requests
-app.use(cors());
+app.use(express.json()); // Built-in Express JSON parser
+app.use(cors()); // Allow cross-origin requests
 
 app.get('/', (req, res) => {
   res.send('Hello, World! The server is working.');
@@ -35,7 +32,6 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204); // No Content
 });
 
-
 // PostgreSQL pool configuration
 const pool = new Pool({
   user: 'postgres',
@@ -45,7 +41,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Test connection
+// Test the PostgreSQL connection
 pool.connect()
   .then(() => console.log('Connected to PostgreSQL'))
   .catch(err => console.error('Connection error', err.stack));
@@ -53,7 +49,6 @@ pool.connect()
 // Define SQL file paths
 const createSQL = path.join(__dirname, 'create.sql');
 const doTransaction = path.join(__dirname, 'transactions.sql');
-//const testDBSQL = path.join(__dirname, 'populate_tables.sql'); Not used currently
 
 // Function to run the SQL file to create tables
 const createTables = () => {
@@ -74,9 +69,10 @@ const createTables = () => {
   });
 };
 
-// Run the SQL script automatically when the server starts
+// Automatically create tables when the server starts
 createTables();
 
+// Endpoint to start a custom function
 app.post('/start-function', (req, res) => {
   console.log('Function started by frontend!');
 
@@ -98,6 +94,34 @@ app.post('/start-function', (req, res) => {
         res.status(500).send({ message: 'Error executing SQL transactions.' });
       });
   });
+});
+
+// Login endpoint to authenticate users
+app.post('/login-function', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required.' });
+  }
+
+  try {
+    // Query to check if the user exists with the provided credentials
+    const result = await pool.query(
+      'SELECT * FROM Customer WHERE CustomerEmail = $1 AND CustomerPassword = $2',
+      [email, password]
+    );
+
+    // If a match is found, return a success response
+    if (result.rows.length > 0) {
+      res.status(200).json({ success: true, message: 'Login successful!' });
+    } else {
+      // If no match is found, return an unauthorized error
+      res.status(401).json({ success: false, message: 'Invalid credentials.' });
+    }
+  } catch (error) {
+    console.error('Error during login query:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
 });
 
 // Start the server

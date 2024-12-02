@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS Customer;
 CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY,
     CustomerName VARCHAR(50), --Changed from ERD due to Naming Conflict
+    CustomerPassword VARCHAR(50), --Added
     CustomerAddress VARCHAR(50), --Added 
     CustomerCity VARCHAR(50), --Added 
     CustomerState VARCHAR(2), --Added 
@@ -18,8 +19,7 @@ CREATE TABLE Customer (
 
 CREATE TABLE BankAccount (
     AccountNumber INT PRIMARY KEY,
-    AccountHolderFirstName VARCHAR(50),
-    AccountHolderLastName VARCHAR(50),
+    AccountHolderName VARCHAR(50),
     AccountType VARCHAR(50),
     Balance DECIMAL
 );
@@ -74,21 +74,21 @@ CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflic
 
 
 -- Insert data into Customer
-/* INSERT INTO Customer (CustomerID, CustomerFirstName, CustomerLastName, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, HasLoyaltyCard)
+INSERT INTO Customer (CustomerID, CustomerName, CustomerPassword, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, HasLoyaltyCard)
 VALUES
-    (1, 'John', 'Doe', '123 Elm St', 'Houston', 'TX', '832-555-1234', TRUE),
-    (2, 'Jane', 'Smith', '456 Oak St', 'Austin', 'TX', '713-555-5678', FALSE),
-    (3, 'Michael', 'Johnson', '789 Pine St', 'Dallas', 'TX', '713-555-8765', TRUE),
-    (4, 'Emily', 'Davis', '101 Maple St', 'San Antonio', 'TX', '832-555-4321', FALSE); */
+    (1, 'Test', 'test', '123 Elm St', 'Houston', 'TX', '832-555-1234', 'Test@gmail.com', TRUE);
+    /* (2, 'Jane Smith', '456 Oak St', 'Austin', 'TX', '713-555-5678', 'JS@Gmail.com',FALSE),
+    (3, 'Michael Johnson', '789 Pine St', 'Dallas', 'TX', '713-555-8765', 'MJ@Gmail.com', TRUE),
+    (4, 'Emily Davis', '101 Maple St', 'San Antonio', 'TX', '832-555-4321', 'ED@Gmail.com', FALSE); */
 
 
 -- Insert data into BankAccount
-/* INSERT INTO BankAccount (AccountNumber, AccountHolderFirstName, AccountHolderLastName, BankName, AccountType, Balance)
+/* INSERT INTO BankAccount (AccountNumber, AccountHolderName, AccountType, Balance)
 VALUES
-    (12345678, 'John', 'Doe', 'Bank of America',  'Checking', 1500.00),
-    (87654321, 'Jane', 'Smith', 'Chase Bank',  'Savings', 2500.00),
-    (11223344, 'Michael', 'Johnson', 'Wells Fargo',  'Checking', 3000.00),
-    (44332211, 'Emily', 'Davis', 'Citibank',  'Savings', 5000.00); */
+    (12345678, 'John Doe', 'Checking', 1500.00),
+    (87654321, 'Jane Smith', 'Savings', 2500.00),
+    (11223344, 'Michael Johnson', 'Checking', 3000.00),
+    (44332211, 'Emily Davis', 'Checking',  5000.00); */
 
 -- Insert data into RestaurantLocation
 INSERT INTO RestaurantLocation (LocationID, RestaurantAddress, RestaurantCity, RestaurantState, RestaurantPhoneNumber)
