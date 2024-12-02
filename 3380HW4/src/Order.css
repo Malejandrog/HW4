@@ -95,82 +95,12 @@ h2 {
   box-sizing: border-box;
 }
 
-#FirstName
-{
-  width: 100px;
-  margin-right: 10px;
+#Locations {
+  margin-bottom: 20px;
 }
 
-label[for='FirstName']
-{
-  margin-right: 5px;
-}
-
-#LastName
-{
-  width: 100px;
-  margin-right: 10px;
-}
-
-label[for='LastName']
-{
-  margin-right: 5px;
-}
-
-#PhoneNumber
-{
-  width: 100px;
-  margin-right: 10px;
-}
-
-label[for='PhoneNumber']
-{
-  margin-right: 5px;
-}
-
-#LoyaltyCard
-{
-  width: 50px;
-  margin-right: 10px;
-  left: 10px;
-}
-
-label[for='LoyaltyCard']
-{
-  margin-right: 5px;
-}
-
-#Address
-{
-  width: 150px;
-  margin-right: 10px;
-}
-
-label[for='Address']
-{
-  margin-right: 5px;
-}
-
-#City
-{
-  width: 100px;
-  margin-right: 10px;
-}
-
-label[for='City']
-{
-  margin-right: 5px;
-}
-
-#State
-{
-  width: 50px;
-  margin-right: 10px;
-}
-
-label[for='State']
-{
-  margin-right: 5px;
+#PaymentMethod {
+  margin-bottom: 20px;
 }
 
 #CCNum
@@ -197,7 +127,7 @@ label[for='CCV']
 
 #CCDate
 {
-  width: 50px;
+  width: 65px;
   margin-right: 10px;
 }
 

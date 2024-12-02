@@ -1,20 +1,26 @@
-import { useState } from 'react'
-import './Order.css'
+import { useState } from 'react';
+import './Order.css';
 import axios from 'axios';
 
 function Order() {
   const [count, setCount] = useState(0);
   const [orderItems, setOrderItems] = useState([]);
+  const [location, setLocation] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [ccv, setCcv] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [tip, setTip] = useState('');
 
   const menuItems = [
     { name: 'The Databurger', price: 8.99, img: 'Burger1.png' },
     { name: 'The Double Smash Patty', price: 9.99, img: 'Burger2.png' },
     { name: 'The Chicken Sandwich', price: 7.99, img: 'ChickenSandwich.png' },
     { name: 'Chicken Tenders', price: 6.99, img: 'ChickenTender.png' },
-    { name: 'Databurger Meal', price: 12.99, img: 'b1Meal.png' },
-    { name: 'Double Patty Meal', price: 13.99, img: 'b2Meal.png' },
-    { name: 'Chicken Sandwich Meal', price: 11.99, img: 'CSMeal.png' },
-    { name: 'Chicken Tender Meal', price: 10.99, img: 'CTMeal.png' },
+    { name: 'Databurger Meal', price: 14.99, img: 'b1Meal.png' },
+    { name: 'Double Patty Meal', price: 15.99, img: 'b2Meal.png' },
+    { name: 'Chicken Sandwich Meal', price: 13.99, img: 'CSMeal.png' },
+    { name: 'Chicken Tender Meal', price: 12.99, img: 'CTMeal.png' },
     { name: 'Chicken Salad', price: 6.99, img: 'Salad.png' },
     { name: 'Fountain Drink', price: 1.99, img: 'Drink.png' },
     { name: 'French Fries', price: 2.99, img: 'Fries.png' },
@@ -33,11 +39,23 @@ function Order() {
 
   const TestDB = async () => {
     try {
-        const response = await axios.post('http://XXX.XX.XXX.XX:5000/start-function');
-        console.log(response.data.message); // Logs "Function executed successfully!"
+      const response = await axios.post('http://XXX.XX.XXX.XX:5000/start-function');
+      console.log(response.data.message); // Logs "Function executed successfully!"
     } catch (error) {
-        console.error('Error calling the backend:', error);
+      console.error('Error calling the backend:', error);
     }
+  };
+
+  const handlePlaceOrder = () => {
+    console.log({
+      location,
+      paymentMethod,
+      cardNumber,
+      ccv,
+      expDate,
+      tip,
+      total: (count * 1.0825).toFixed(2),
+    });
   };
 
   return (
@@ -70,8 +88,13 @@ function Order() {
           <button onClick={clearOrder} className="clearButton">Clear Order</button>
 
           <label htmlFor="Locations">Select a Location:</label>
-          <select name="Locations" id="Locations">
-            <option value="" selected disabled>Select a city</option>
+          <select
+            name="Locations"
+            id="Locations"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          >
+            <option value="" disabled>Select a city</option>
             <option value="PHX">Phoenix, AZ</option>
             <option value="LA">Los Angeles, CA</option>
             <option value="SDE">San Diego, CA</option>
@@ -82,66 +105,83 @@ function Order() {
             <option value="SAT">San Antonio, TX</option>
           </select>
 
-        <div className='CustomerName'>
-          <label htmlFor="FirstName" >First Name:</label>
-          <input type="text" id="FirstName" />
-
-          <label htmlFor="LastName">Last Name:</label>
-          <input type="text" id="LastName" />
-        </div>
-
-        <div className='CustomerInfo'>
-          <label htmlFor="PhoneNumber">Phone Number:</label>
-          <input type="text" id="PhoneNumber" />
-
-          <label htmlFor="LoyaltyCard">Loyalty Card:</label>
-          <select name="LoyaltyCard" id="LoyaltyCard">
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-        
-        <div className='CustomerAddress'>
-          <label htmlFor="Address">Address:</label>
-          <input type="text" id="Address" />
-
-          <label htmlFor="City">City:</label>
-          <input type="text" id="City" />
-
-          <label htmlFor="State">State:</label>
-          <input type="text" id="State" />
-        </div>
-
           <label htmlFor="PaymentMethod">Payment Method:</label>
-          <select name="PaymentMethod" id="PaymentMethod">
-            <option value="" selected disabled>Payment:</option>
+          <select
+            name="PaymentMethod"
+            id="PaymentMethod"
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          >
+            <option value="" disabled>Payment:</option>
             <option value="Credit">Credit</option>
             <option value="Debit">Debit</option>
             <option value="GiftCard">Gift Card</option>
           </select>
 
-        <div className='CCInfo'>
-          <label htmlFor="CCNum">Credit Card Number:</label>
-          <input type="text" id="CCNum" />
+          <div className='CCInfo'>
+            <label htmlFor="CCNum">Card Number:</label>
+            <input
+              type="text"
+              id="CCNum"
+              value={cardNumber}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Allow only numbers
+                setCardNumber(value);
+              }}
+              maxLength={16} // Limit to 16 digits
+              placeholder="Card Number"
+            />
 
-          <label htmlFor="CCV">CCV:</label>
-          <input type="text" id="CCV" />
 
-          <label htmlFor="CCDate">Exp. Date:</label>
-          <input type="text" id="CCDate"/>
-        </div> 
 
-          
+            <label htmlFor="CCV">CCV:</label>
+            <input
+              type="text"
+              id="CCV"
+              value={ccv}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                setCcv(value);
+              }}
+              maxLength={4} // Limit to 4 digits
+              placeholder="CCV"
+            />
+
+            <label htmlFor="CCDate">Exp. Date:</label>
+            <input
+              type="text"
+              id="CCDate"
+              value={expDate}
+              onChange={(e) => {
+                let value = e.target.value.replace(/[^0-9/]/g, ''); // Allow only numbers and "/"
+                if (value.length === 2 && !value.includes('/')) {
+                  value = value + '/'; // Add slash after MM
+                }
+                setExpDate(value.slice(0, 5)); // Limit to "MM/YY"
+              }}
+              placeholder="MM/YY"
+            />
+          </div>
 
           <label htmlFor="Tip">Tip:</label>
-          <input type="text" id="Tip" />
+            <input
+              type="text"
+              id="Tip"
+              value={tip}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9.]/g, ''); // Allow only numbers and "."
+                const isValid = /^\d*\.?\d{0,2}$/.test(value); // Ensure valid format (max 2 decimal places)
+                if (isValid) setTip(value);
+              }}
+              placeholder="Tip"
+            />
 
-          <p><b>Total Price: ${(count*1.0825).toFixed(2)}</b></p>
 
-          <button className="orderButton">Place Order</button>
+          <p><b>Total Price: ${(count * 1.0825).toFixed(2)}</b></p>
+
+          <button className="orderButton" onClick={handlePlaceOrder}>Place Order</button>
 
           <button onClick={TestDB} className="testerButton">Test DB</button>
-
         </div>
       </div>
     </>
