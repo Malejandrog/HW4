@@ -107,7 +107,7 @@ app.post('/login-function', async (req, res) => {
   try {
     // Query to check if the user exists with the provided credentials
     const result = await pool.query(
-      'SELECT * FROM Customer WHERE CustomerEmail = $1 AND CustomerPassword = $2',
+      'SELECT * FROM Customer WHERE LOWER(CustomerEmail) = LOWER($1) AND CustomerPassword = $2',
       [email, password]
     );
 
