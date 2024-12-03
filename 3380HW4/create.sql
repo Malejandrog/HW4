@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS BankAccount;
 DROP TABLE IF EXISTS Customer;
 
 CREATE TABLE Customer (
-    CustomerID INT PRIMARY KEY, --Maybe make this serial instead of int?
+    CustomerID SERIAL PRIMARY KEY, --Made this serial instead of int
     CustomerName VARCHAR(50), --Changed from ERD due to Naming Conflict
     CustomerPassword VARCHAR(50), --Added
     CustomerAddress VARCHAR(50), --Added 
@@ -47,7 +47,7 @@ CREATE TABLE OrderInfo ( --Changed from ERD due to Naming Conflict
 );
 
 CREATE TABLE PaymentInfo (
-    PaymentInfoID INT PRIMARY KEY,
+    PaymentInfoID SERIAL PRIMARY KEY, --Made this serial instead of int
     CustomerID INT,
     CreditCardNumber VARCHAR(50),
     CCV INT,
@@ -57,7 +57,7 @@ CREATE TABLE PaymentInfo (
 );
 
 CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflict?
-    TransactionID INT PRIMARY KEY,
+    TransactionID SERIAL PRIMARY KEY, --Made this serial instead of int
     OrderID INT,
     AccountNumber INT, --Fixed from ERD? Said CustomerAccountID on ERD.
     RestaurantAccountID INT, -- Modify later to be Foreign Key based on Tommy's requirements
