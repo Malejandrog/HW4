@@ -41,7 +41,7 @@ function Order() {
 
   const TestDB = async () => {
     try {
-        const response = await axios.post('http://172.25.48.31:5000/start-function');
+        const response = await axios.post('http://172.19.155.78:5000/start-function');
         console.log(response.data.message); // Logs "Function executed successfully!"
     } catch (error) {
         console.error('Error calling the backend:', error);
@@ -51,7 +51,7 @@ function Order() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://172.25.48.31:5000/place-order', {
+      const response = await axios.post('http://172.19.155.78:5000/place-order', {
         count: count,
         location: location,
         paymentMethod: paymentMethod,
