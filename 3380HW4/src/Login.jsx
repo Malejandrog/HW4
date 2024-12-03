@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // Send a POST request to the /api/login endpoint
-      const response = await axios.post('http://172.19.155.78:5000/login-function', {
+      const response = await axios.post('http://172.25.48.31:5000/login-function', {
         email: email,
         password: password,
       });

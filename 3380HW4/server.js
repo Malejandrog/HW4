@@ -142,8 +142,6 @@ app.post('/login-function', async (req, res) => {
   }
 });
 
-
-
 app.post('/place-order', async (req, res) => {
   const { count, location, paymentMethod, cardNumber, ccv, expDate, tip } = req.body;
 
@@ -184,6 +182,34 @@ app.post('/place-order', async (req, res) => {
     res.status(200).json({ message: 'Order placed successfully!' });
   } catch (error) {
     console.error('Error placing order:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+app.post('/create-account',  async (req, res) => {
+  console.log('Creating Account')
+  const { name, address, city, state, phone, email, password, hasloyaltycard } = req.body;
+  try {
+    // Insert the account details into the database
+    const result = await pool.query(
+      `INSERT INTO Customer (CustomerName, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, CustomerPassword, HasLoyaltyCard) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING CustomerID`,
+      [name, address, city, state, phone, email, password, hasloyaltycard]
+    );
+
+    // Store the logged-in user info in global variables
+    loggedInCustomerID = result.rows[0].customerid;
+    console.log('customerID:', loggedInCustomerID);
+    loggedInCustomerEmail = email;
+    console.log('customerEmail:', loggedInCustomerEmail);
+    loggedInCustomerAddress = address;
+    console.log('customerAddress:', loggedInCustomerAddress);
+
+    res.status(200).json({ success: true, message: 'Account created successfully!' });
+  } catch (error) {
+    console.error('Error creating account:', error);
+    console.log('Inserting into Customer table:', { name, address, city, state, phone, email, password, hasloyaltycard });
     res.status(500).json({ message: 'Internal server error.' });
   }
 });

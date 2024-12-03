@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Text, Link as ChakraLink } from '@chakra-ui/react'; // Import Chakra UI components
 import './Register.css';
+import axios from 'axios';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -11,10 +12,33 @@ const Register = () => {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [hasloyaltycard, setHasLoyaltyCard] = useState('');
+  const navigate = useNavigate(); // Initialize the navigate function
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Email:', email, 'Password:', password);
+    try {
+      const response = await axios.post('http://172.25.48.31:5000/create-account', {
+        name: name,
+        address: address,
+        city: city,
+        state: state,
+        phone: phone,
+        email: email,
+        password: password,
+        hasloyaltycard: hasloyaltycard === "true"
+      });
+  
+      if (response.data.success) {
+        console.log('User Created:', response.data.message);
+        navigate('/Order'); // Use navigate to redirect to /Order
+      } else {
+        setError('Invalid details. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error during user creation:', err);
+      setError('An error occurred during user creation. Please try again.');
+    }
   };
 
   return (
@@ -77,6 +101,17 @@ const Register = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        <label htmlFor="hasloyaltycard">Loyalty Card:</label>
+        <select
+          name="hasloyaltycard"
+          id="hasloyaltycard"
+          value={hasloyaltycard}
+          onChange={(e) => setHasLoyaltyCard(e.target.value)}
+        >
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
 
 
 

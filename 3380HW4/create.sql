@@ -83,10 +83,10 @@ CREATE TABLE OrderHistory( --New Table
 
 
 -- Insert data into Customer
-INSERT INTO Customer (CustomerID, CustomerName, CustomerPassword, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, HasLoyaltyCard)
+/* INSERT INTO Customer (CustomerID, CustomerName, CustomerPassword, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, HasLoyaltyCard)
 VALUES
     (1, 'Test', 'test', '123 Elm St', 'Houston', 'TX', '832-555-1234', 'Test@gmail.com', TRUE);
-    /* (2, 'Jane Smith', '456 Oak St', 'Austin', 'TX', '713-555-5678', 'JS@Gmail.com',FALSE),
+    (2, 'Jane Smith', '456 Oak St', 'Austin', 'TX', '713-555-5678', 'JS@Gmail.com',FALSE),
     (3, 'Michael Johnson', '789 Pine St', 'Dallas', 'TX', '713-555-8765', 'MJ@Gmail.com', TRUE),
     (4, 'Emily Davis', '101 Maple St', 'San Antonio', 'TX', '832-555-4321', 'ED@Gmail.com', FALSE); */
 
