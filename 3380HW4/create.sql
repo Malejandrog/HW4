@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS OrderHistory;
 DROP TABLE IF EXISTS TransactionInfo;
 DROP TABLE IF EXISTS PaymentInfo;
 DROP TABLE IF EXISTS OrderInfo;
@@ -6,14 +7,14 @@ DROP TABLE IF EXISTS BankAccount;
 DROP TABLE IF EXISTS Customer;
 
 CREATE TABLE Customer (
-    CustomerID INT PRIMARY KEY,
+    CustomerID INT PRIMARY KEY, --Maybe make this serial instead of int?
     CustomerName VARCHAR(50), --Changed from ERD due to Naming Conflict
     CustomerPassword VARCHAR(50), --Added
     CustomerAddress VARCHAR(50), --Added 
     CustomerCity VARCHAR(50), --Added 
     CustomerState VARCHAR(2), --Added 
     CustomerPhoneNumber VARCHAR(50), --Changed to differentiate Customer/Restaurant numbers
-    CustomerEmail VARCHAR(50),
+    CustomerEmail VARCHAR(50), --Added
     HasLoyaltyCard BOOLEAN
 );
 
@@ -25,7 +26,7 @@ CREATE TABLE BankAccount (
 );
 
 CREATE TABLE RestaurantLocation (
-    LocationID INT PRIMARY KEY,
+    LocationID VARCHAR(3) PRIMARY KEY,
     RestaurantAddress VARCHAR(50), --Changed from ERD due to Naming Conflict
     RestaurantCity VARCHAR(50), --Added 
     RestaurantState VARCHAR(2), --Changed from ERD due to Naming Conflict
@@ -33,10 +34,9 @@ CREATE TABLE RestaurantLocation (
 );
 
 CREATE TABLE OrderInfo ( --Changed from ERD due to Naming Conflict
-    OrderID INT PRIMARY KEY,
-    LocationID INT,
+    OrderID SERIAL PRIMARY KEY, --Made this serial instead of int
+    LocationID VARCHAR(3),
     CustomerID INT,
-    OrderItems VARCHAR(9999), --Added 
     OrderDate DATE, --Changed from ERD due to Naming Conflict
     TotalAmount DECIMAL,
     TaxAmount DECIMAL,
@@ -67,6 +67,15 @@ CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflic
     FOREIGN KEY (AccountNumber) REFERENCES BankAccount(AccountNumber)
 );
 
+CREATE TABLE OrderHistory( --New Table
+    OrderID INT,
+    ItemID INT,
+    ItemQuantity INT,
+    ItemPrice DECIMAL,
+    FOREIGN KEY (OrderID) REFERENCES OrderInfo(OrderID),
+    PRIMARY KEY (OrderID, ItemID)
+);
+
 
 
 --DUMMY DATA BELOW
@@ -93,34 +102,34 @@ VALUES
 -- Insert data into RestaurantLocation
 INSERT INTO RestaurantLocation (LocationID, RestaurantAddress, RestaurantCity, RestaurantState, RestaurantPhoneNumber)
 VALUES
-    (1, '456 Desert St', 'Phoenix', 'AZ', '800-987-6543'),
-    (2, '789 Hollywood Blvd', 'Los Angeles', 'CA', '800-555-5678'),
-    (3, '123 Ocean Ave', 'San Diego', 'CA', '800-333-4321'),
-    (4, '456 Lake Shore Dr', 'Chicago', 'IL', '800-444-5678'),
-    (5, '789 Times Square', 'New York', 'NY', '800-222-7654'),
-    (6, '123 Liberty Bell St', 'Philadelphia', 'PA', '800-111-8888'),
-    (7, '456 Space Center Blvd', 'Houston', 'TX', '800-999-1234'),
-    (8, '789 Alamo Rd', 'San Antonio', 'TX', '800-888-4444');
+    ('PHX', '456 Desert St', 'Phoenix', 'AZ', '800-987-6543'),
+    ('LAG', '789 Hollywood Blvd', 'Los Angeles', 'CA', '800-555-5678'),
+    ('SDE', '123 Ocean Ave', 'San Diego', 'CA', '800-333-4321'),
+    ('CHI', '456 Lake Shore Dr', 'Chicago', 'IL', '800-444-5678'),
+    ('NYC', '789 Times Square', 'New York', 'NY', '800-222-7654'),
+    ('PHI', '123 Liberty Bell St', 'Philadelphia', 'PA', '800-111-8888'),
+    ('HOU', '456 Space Center Blvd', 'Houston', 'TX', '800-999-1234'),
+    ('SAT', '789 Alamo Rd', 'San Antonio', 'TX', '800-888-4444');
 
 
 -- Insert data into OrderInfo
-/* INSERT INTO OrderInfo (OrderID, LocationID, CustomerID, OrderItems, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod)
+/* INSERT INTO OrderInfo (OrderID, LocationID, CustomerID, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod)
 VALUES
-    (1, 1, 1, 'The Databurger, Fries', '2024-11-15', 50.00, 5.00, 10.00, 'Credit Card'),
-    (2, 2, 2, 'The Double Smash Patty, Fries, Fountain Drink', '2024-11-16', 75.00, 7.50, 15.00, 'Cash'),
-    (3, 3, 3, 'Databurger Meal', '2024-11-17', 100.00, 10.00, 20.00, 'Credit Card'),
-    (4, 4, 4, 'Chicken Salad', '2024-11-18', 25.00, 2.50, 5.00, 'Debit Card'); */
+    (1, 'HOU', 1, '2024-11-15', 50.00, 5.00, 10.00, 'Credit Card'),
+    (2, 'SAT', 2, '2024-11-16', 75.00, 7.50, 15.00, 'Cash'),
+    (3, 'NYC', 3, '2024-11-17', 100.00, 10.00, 20.00, 'Credit Card'),
+    (4, 'HOU', 4, '2024-11-18', 25.00, 2.50, 5.00, 'Debit Card'); */
 
 -- Insert data into PaymentInfo
 /* INSERT INTO PaymentInfo (PaymentInfoID, CustomerID, CreditCardNumber, CCV, ExpirationDate, BillingAddress)
 VALUES
-    (1, 1, '1111 1111 1111 1111', 123, '2025-12-31', '123 Elm St'),
-    (2, 2, '2222 2222 2222 2222', 456, '2026-11-30', '456 Oak St'),
-    (3, 3, '3333 3333 3333 3333', 789, '2027-10-31', '789 Pine St'),
-    (4, 4, '4444 4444 4444 4444', 321, '2028-09-30', '101 Maple St'); */
+    (1, 10, '1111 1111 1111 1111', 123, '2025-12-31', '123 Elm St'),
+    (2, 23, '2222 2222 2222 2222', 456, '2026-11-30', '456 Oak St'),
+    (3, 38, '3333 3333 3333 3333', 789, '2027-10-31', '789 Pine St'),
+    (4, 41, '4444 4444 4444 4444', 321, '2028-09-30', '101 Maple St'); */
 
 -- Insert data into TransactionInfo
-/* INSERT INTO TransactionInfo (TransactionID, OrderID, AccountID, RestaurantAccountID, TransactionDate, PaymentAmount)
+/* INSERT INTO TransactionInfo (TransactionID, OrderID, AccountNumber, RestaurantAccountID, TransactionDate, PaymentAmount)
 VALUES
     (1, 1, 1, 10, '2024-11-15', 65.00),
     (2, 2, 2, 11, '2024-11-16', 97.50),

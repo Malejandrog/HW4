@@ -191,6 +191,18 @@ button img {
   height: auto;
 }
 
+.subtotal {
+  margin-bottom: -15px;
+}
+
+.tax{
+  margin-bottom: -15px;
+}
+
+.totalPrice {
+
+}
+
 ul {
   text-align: left;
   padding-left: 20px;

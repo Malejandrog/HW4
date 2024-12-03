@@ -11,6 +11,8 @@ function Order() {
   const [ccv, setCcv] = useState('');
   const [expDate, setExpDate] = useState('');
   const [tip, setTip] = useState('');
+  const [error, setError] = useState('');
+
 
   const menuItems = [
     { name: 'The Databurger', price: 8.99, img: 'Burger1.png' },
@@ -46,17 +48,32 @@ function Order() {
     }
   };
 
-  const handlePlaceOrder = () => {
-    console.log({
-      location,
-      paymentMethod,
-      cardNumber,
-      ccv,
-      expDate,
-      tip,
-      total: (count * 1.0825).toFixed(2),
-    });
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://172.19.155.78:5000/place-order', {
+        count: count,
+        location: location,
+        paymentMethod: paymentMethod,
+        cardNumber: cardNumber,
+        ccv: ccv,
+        expDate: expDate,
+        tip: tip
+      });
+  
+      if (response.data.success) {
+        console.log('Order Placed:', response.data.message);
+        setError(''); // Clear any previous errors
+      } else {
+        setError('Invalid order. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error during ordering:', err);
+      setError('An error occurred during ordering. Please try again.');
+    }
   };
+  
+
 
   return (
     <>
@@ -96,10 +113,10 @@ function Order() {
           >
             <option value="" disabled>Select a city</option>
             <option value="PHX">Phoenix, AZ</option>
-            <option value="LA">Los Angeles, CA</option>
+            <option value="LAG">Los Angeles, CA</option>
             <option value="SDE">San Diego, CA</option>
             <option value="CHI">Chicago, IL</option>
-            <option value="NY">New York, NY</option>
+            <option value="NYC">New York, NY</option>
             <option value="PHI">Philadelphia, PA</option>
             <option value="HOU">Houston, TX</option>
             <option value="SAT">San Antonio, TX</option>
@@ -176,8 +193,10 @@ function Order() {
               placeholder="Tip"
             />
 
+          <p className='subtotal'><b>Subtotal: ${count.toFixed(2)}</b></p>
+          <p className='tax'><b>Tax: ${(count * 0.0825).toFixed(2)}</b></p>
+          <p className='totalPrice'><b>Total Price: ${(count * 1.0825).toFixed(2)}</b></p>
 
-          <p><b>Total Price: ${(count * 1.0825).toFixed(2)}</b></p>
 
           <button className="orderButton" onClick={handlePlaceOrder}>Place Order</button>
 

@@ -96,6 +96,11 @@ app.post('/start-function', (req, res) => {
   });
 });
 
+// Global variables to store logged-in user information
+let loggedInCustomerID = null;
+let loggedInCustomerEmail = null;
+let loggedInCustomerAddress = null;
+
 // Login endpoint to authenticate users
 app.post('/login-function', async (req, res) => {
   const { email, password } = req.body;
@@ -107,12 +112,25 @@ app.post('/login-function', async (req, res) => {
   try {
     // Query to check if the user exists with the provided credentials
     const result = await pool.query(
-      'SELECT * FROM Customer WHERE LOWER(CustomerEmail) = LOWER($1) AND CustomerPassword = $2',
+      'SELECT CustomerID, CustomerEmail, CustomerAddress FROM Customer WHERE LOWER(CustomerEmail) = LOWER($1) AND CustomerPassword = $2',
       [email, password]
     );
 
+    console.log(result.rows[0].customeremail);
+
     // If a match is found, return a success response
     if (result.rows.length > 0) {
+      // Extract the user data
+      const { CustomerID, CustomerEmail, CustomerAddress } = result.rows[0];
+
+      // Store the logged-in user info in global variables
+      loggedInCustomerID = result.rows[0].customerid;
+      console.log('customerID:', loggedInCustomerID);
+      loggedInCustomerEmail = result.rows[0].customeremail;
+      console.log('customerEmail:', loggedInCustomerEmail);
+      loggedInCustomerAddress = result.rows[0].customeraddress;
+      console.log('customerAddress:', loggedInCustomerAddress);
+
       res.status(200).json({ success: true, message: 'Login successful!' });
     } else {
       // If no match is found, return an unauthorized error
@@ -120,6 +138,52 @@ app.post('/login-function', async (req, res) => {
     }
   } catch (error) {
     console.error('Error during login query:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+
+
+app.post('/place-order', async (req, res) => {
+  const { count, location, paymentMethod, cardNumber, ccv, expDate, tip } = req.body;
+
+// Retrieve the global variables
+  const customerID = loggedInCustomerID;
+  const customerEmail = loggedInCustomerEmail;
+  const customerAddress = loggedInCustomerAddress;
+
+  // Ensure the user is logged in
+  console.log('Test Message 1');
+
+  if (!customerEmail) {
+    console.log('Test Message 2');
+    return res.status(400).json({ message: 'User not logged in.' });
+  }
+
+  console.log('Test Message 3');
+
+  // Ensure the necessary fields are present
+  if (!count || !location || !paymentMethod || !cardNumber || !ccv || !expDate || !tip) {
+    console.log('Test Message 4');
+    return res.status(401).json({ message: 'Field Missing.' });
+  }
+
+  console.log('Test Message 5');
+
+  try {
+    const totalAmount = parseFloat((count * 1.0825).toFixed(2));
+    const taxAmount = parseFloat((count * 0.0825).toFixed(2));
+
+    // Insert the order into the database
+    await pool.query(
+      `INSERT INTO OrderInfo (LocationID, CustomerID, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod) 
+       VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6)`,
+      [location, customerID, totalAmount, taxAmount, tip, paymentMethod]
+    );
+
+    res.status(200).json({ message: 'Order placed successfully!' });
+  } catch (error) {
+    console.error('Error placing order:', error);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
