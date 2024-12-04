@@ -18,7 +18,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://172.19.155.78:5000/create-account', {
+      const response = await axios.post('http://172.25.48.31:5000/create-account', {
         name: name,
         address: address,
         city: city,

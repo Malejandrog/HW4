@@ -72,7 +72,7 @@ CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflic
 
 CREATE TABLE OrderHistory( --New Table
     OrderID INT,
-    ItemID INT,
+    ItemID VARCHAR(3),
     ItemQuantity INT,
     ItemPrice DECIMAL,
     FOREIGN KEY (OrderID) REFERENCES OrderInfo(OrderID),

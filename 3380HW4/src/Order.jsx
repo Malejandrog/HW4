@@ -12,36 +12,45 @@ function Order() {
   const [expDate, setExpDate] = useState('');
   const [tip, setTip] = useState('');
   const [error, setError] = useState('');
+  const [itemQuantities, setItemQuantities] = useState({}); // To track item quantities by id
 
 
   const menuItems = [
-    { name: 'The Databurger', price: 8.99, img: 'Burger1.png' },
-    { name: 'The Double Smash Patty', price: 9.99, img: 'Burger2.png' },
-    { name: 'The Chicken Sandwich', price: 7.99, img: 'ChickenSandwich.png' },
-    { name: 'Chicken Tenders', price: 6.99, img: 'ChickenTender.png' },
-    { name: 'Databurger Meal', price: 14.99, img: 'b1Meal.png' },
-    { name: 'Double Patty Meal', price: 15.99, img: 'b2Meal.png' },
-    { name: 'Chicken Sandwich Meal', price: 13.99, img: 'CSMeal.png' },
-    { name: 'Chicken Tender Meal', price: 12.99, img: 'CTMeal.png' },
-    { name: 'Chicken Salad', price: 6.99, img: 'Salad.png' },
-    { name: 'Fountain Drink', price: 1.99, img: 'Drink.png' },
-    { name: 'French Fries', price: 2.99, img: 'Fries.png' },
-    { name: 'Ice Cream', price: 3.99, img: 'IceCream.png' },
+    { id: "dbg", name: 'The Databurger', price: 8.99, img: 'Burger1.png' },
+    { id: "dsp", name: 'The Double Smash Patty', price: 9.99, img: 'Burger2.png' },
+    { id: "tcs", name: 'The Chicken Sandwich', price: 7.99, img: 'ChickenSandwich.png' },
+    { id: "cht", name: 'Chicken Tenders', price: 6.99, img: 'ChickenTender.png' },
+    { id: "dbm", name: 'Databurger Meal', price: 14.99, img: 'b1Meal.png' },
+    { id: "dpm", name: 'Double Patty Meal', price: 15.99, img: 'b2Meal.png' },
+    { id: "csm", name: 'Chicken Sandwich Meal', price: 13.99, img: 'CSMeal.png' },
+    { id: "ctm", name: 'Chicken Tender Meal', price: 12.99, img: 'CTMeal.png' },
+    { id: "chs", name: 'Chicken Salad', price: 6.99, img: 'Salad.png' },
+    { id: "fdr", name: 'Fountain Drink', price: 1.99, img: 'Drink.png' },
+    { id: "ffr", name: 'French Fries', price: 2.99, img: 'Fries.png' },
+    { id: "icr", name: 'Ice Cream', price: 3.99, img: 'IceCream.png' },
   ];
 
   const addItemToOrder = (item) => {
     setOrderItems((prevItems) => [...prevItems, item]);
     setCount((prevCount) => prevCount + item.price);
+
+    setItemQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [item.id]: (prevQuantities[item.id] || 0) + 1,
+    }));
+
+    console.log();
   };
 
   const clearOrder = () => {
     setOrderItems([]);
+    setItemQuantities({});
     setCount(0);
   };
 
   const TestDB = async () => {
     try {
-        const response = await axios.post('http://172.19.155.78:5000/start-function');
+        const response = await axios.post('http://172.25.48.31:5000/start-function');
         console.log(response.data.message); // Logs "Function executed successfully!"
     } catch (error) {
         console.error('Error calling the backend:', error);
@@ -50,16 +59,25 @@ function Order() {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+
+    const items = Object.entries(itemQuantities).map(([itemid, quantity]) => ({
+      itemid, // itemid is the key
+      quantity // quantity is the value
+    }));
+
     try {
-      const response = await axios.post('http://172.19.155.78:5000/place-order', {
+      const response = await axios.post('http://172.25.48.31:5000/place-order', {
         count: count, //total price
         location: location,
         paymentMethod: paymentMethod,
         cardNumber: cardNumber,
         ccv: ccv,
         expDate: expDate,
-        tip: tip
+        tip: tip,
+        items: items // Array of ordered items: [{itemid, quantity}, {itemid, quantity}]
       });
+
+      console.log('Items:', items);
   
       if (response.data.success) {
         console.log('Order Placed:', response.data.message);
@@ -95,12 +113,25 @@ function Order() {
         </div>
 
         <div className='paymentInfo'>
-          <p className='orderInfo'>Order Info:</p>
-          <ul>
-            {orderItems.map((item, index) => (
-              <li key={index}>{item.name} - ${item.price.toFixed(2)}</li>
-            ))}
-          </ul>
+          <p className='orderInfo'>Order Summary:</p>
+          <p>
+            <div>
+              {Object.keys(itemQuantities).length > 0 ? (
+                Object.entries(itemQuantities).map(([id, quantity]) => {
+                  // Ensure the ID comparison is done as strings
+                  const menuItem = menuItems.find((item) => item.id === id);  // `id` is now a string
+                  if (!menuItem) return null; // Skip if no matching menu item
+                  return (
+                    <div key={id}>
+                      <div> - {menuItem.name} - Quantity: {quantity} </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div>No items ordered yet.</div>
+              )}
+            </div>
+          </p>
 
           <button onClick={clearOrder} className="clearButton">Clear Order</button>
 

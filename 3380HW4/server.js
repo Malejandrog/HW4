@@ -149,7 +149,7 @@ app.post('/login-function', async (req, res) => {
 });
 
 app.post('/place-order', async (req, res) => {
-  const { count, location, paymentMethod, cardNumber, ccv, expDate, tip } = req.body;
+  const { count, location, paymentMethod, cardNumber, ccv, expDate, tip, items } = req.body;
 
 // Retrieve the global variables
   const customerID = loggedInCustomerID;
@@ -170,7 +170,7 @@ app.post('/place-order', async (req, res) => {
   console.log('Test Message 3');
 
   // Ensure the necessary fields are present
-  if (!count || !location || !paymentMethod || !cardNumber || !ccv || !expDate || !tip) {
+  if (!count || !location || !paymentMethod || !cardNumber || !ccv || !expDate || !tip || !items || !Array.isArray(items)) {
     console.log('Test Message 4');
     return res.status(401).json({ message: 'Field Missing.' });
   }
@@ -197,12 +197,42 @@ app.post('/place-order', async (req, res) => {
     );
     console.log('PaymentInfo Updated');
 
+    // Insert transaction information
     await pool.query(
       `INSERT INTO TransactionInfo (OrderID, AccountNumber, LocationID, TransactionDate, PaymentAmount)
        VALUES ($1, $2, $3, CURRENT_DATE, $4)`,
       [orderID, customerBank, location, totalAmount]
     );
     console.log('TransactionInfo Updated');
+
+    // Insert each item into the OrderHistory table
+    const client = await pool.connect(); // Begin transaction
+    try {
+      await client.query('BEGIN');
+
+      for (const item of items) {
+        console.log(item)
+        const { itemid, quantity } = item;
+        if (!itemid || !quantity) {
+          console.log(itemid, quantity)
+          throw new Error('Invalid item format.');
+        }
+
+        await client.query(
+          `INSERT INTO OrderHistory (OrderID, ItemID, ItemQuantity) 
+           VALUES ($1, $2, $3)`,
+          [orderID, itemid, quantity]
+        );
+      }
+
+      await client.query('COMMIT');
+      console.log('OrderHistory Updated');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
 
     res.status(200).json({ message: 'Order placed successfully!' });
   } catch (error) {

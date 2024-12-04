@@ -51,6 +51,12 @@ h2 {
   left: 575px;
 }
 
+.orderInfo, .menuArea, .paymentInfo {
+  text-align: left;
+  margin: 0;
+  margin-bottom: 4px;
+}
+
 .topBar
 {
   z-index: 1000;
