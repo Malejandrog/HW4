@@ -189,6 +189,36 @@ app.post('/place-order', async (req, res) => {
     );
     const orderID = orderResult.rows[0].orderid;
     console.log('OrderInfo Updated');
+    
+    const balanceResult = await pool.query(
+      `SELECT Balance FROM BankAccount WHERE CustomerID = $1`,
+      [customerID]
+    );
+    
+    // Check if a balance was retrieved
+    if (balanceResult.rows.length > 0) {
+      // Extract the balance from the result
+      let customerBalance = parseFloat(balanceResult.rows[0].balance); // Ensure balance is a float
+
+      // Check if the customer has sufficient funds
+      if (customerBalance < totalAmount) {
+        throw new Error('Insufficient funds.');
+      }
+
+      // Deduct the total amount from the balance and fix to 2 decimal points
+      customerBalance -= totalAmount;
+      customerBalance = parseFloat(customerBalance.toFixed(2));
+
+      // Update the balance in the database
+      await pool.query(
+        `UPDATE BankAccount
+        SET Balance = $1
+        WHERE CustomerID = $2`,
+        [customerBalance, customerID]
+      );
+    } else {
+      throw new Error('Customer balance not found.');
+    }
 
     await pool.query(
       `INSERT INTO PaymentInfo (OrderID, CustomerID, CreditCardNumber, CCV, ExpirationDate, BillingAddress)
@@ -255,11 +285,13 @@ app.post('/create-account',  async (req, res) => {
        RETURNING CustomerID`,
       [name, address, city, state, phone, email, password, hasloyaltycard]
     );
+    const customerID2 = result.rows[0].customerid;
     console.log('Customer Tuple Created');
 
+    // Generates 10 random digits to use as an account number
     let Accnumber = '';
-    for (let i = 0; i < 16; i++) {
-      Accnumber += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
+    for (let i = 0; i < 10; i++) {
+      Accnumber += Math.floor(Math.random() * 10); 
     }
 
     LoggedInCustomerAccountNumber = Accnumber;
@@ -272,9 +304,9 @@ app.post('/create-account',  async (req, res) => {
     const accountType = Math.random() < 0.5 ? 'Checking' : 'Savings';
 
     await pool.query(
-      `INSERT INTO BankAccount (AccountNumber, AccountHolderName, AccountType, Balance) 
-       VALUES ($1, $2, $3, $4)`,
-      [Accnumber, name, accountType, Balnumber]
+      `INSERT INTO BankAccount (CustomerID, AccountNumber, AccountHolderName, AccountType, Balance) 
+       VALUES ($1, $2, $3, $4, $5)`,
+      [customerID2, Accnumber, name, accountType, Balnumber]
     );
     console.log('BankAccount Tuple Created');
 

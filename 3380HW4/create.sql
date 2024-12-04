@@ -20,9 +20,11 @@ CREATE TABLE Customer (
 
 CREATE TABLE BankAccount (
     AccountNumber BIGINT PRIMARY KEY,
+    CustomerID INT,
     AccountHolderName VARCHAR(50),
     AccountType VARCHAR(50),
-    Balance DECIMAL
+    Balance DECIMAL,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
 CREATE TABLE RestaurantLocation (
@@ -74,7 +76,6 @@ CREATE TABLE OrderHistory( --New Table
     OrderID INT,
     ItemID VARCHAR(3),
     ItemQuantity INT,
-    ItemPrice DECIMAL,
     FOREIGN KEY (OrderID) REFERENCES OrderInfo(OrderID),
     PRIMARY KEY (OrderID, ItemID)
 );

@@ -16,18 +16,18 @@ function Order() {
 
 
   const menuItems = [
-    { id: "dbg", name: 'The Databurger', price: 8.99, img: 'Burger1.png' },
-    { id: "dsp", name: 'The Double Smash Patty', price: 9.99, img: 'Burger2.png' },
-    { id: "tcs", name: 'The Chicken Sandwich', price: 7.99, img: 'ChickenSandwich.png' },
-    { id: "cht", name: 'Chicken Tenders', price: 6.99, img: 'ChickenTender.png' },
-    { id: "dbm", name: 'Databurger Meal', price: 14.99, img: 'b1Meal.png' },
-    { id: "dpm", name: 'Double Patty Meal', price: 15.99, img: 'b2Meal.png' },
-    { id: "csm", name: 'Chicken Sandwich Meal', price: 13.99, img: 'CSMeal.png' },
-    { id: "ctm", name: 'Chicken Tender Meal', price: 12.99, img: 'CTMeal.png' },
-    { id: "chs", name: 'Chicken Salad', price: 6.99, img: 'Salad.png' },
-    { id: "fdr", name: 'Fountain Drink', price: 1.99, img: 'Drink.png' },
-    { id: "ffr", name: 'French Fries', price: 2.99, img: 'Fries.png' },
-    { id: "icr", name: 'Ice Cream', price: 3.99, img: 'IceCream.png' },
+    { id: "DBG", name: 'The Databurger', price: 8.99, img: 'Burger1.png' },
+    { id: "DSP", name: 'The Double Smash Patty', price: 9.99, img: 'Burger2.png' },
+    { id: "TCS", name: 'The Chicken Sandwich', price: 7.99, img: 'ChickenSandwich.png' },
+    { id: "CHT", name: 'Chicken Tenders', price: 6.99, img: 'ChickenTender.png' },
+    { id: "DBM", name: 'Databurger Meal', price: 14.99, img: 'b1Meal.png' },
+    { id: "DPM", name: 'Double Patty Meal', price: 15.99, img: 'b2Meal.png' },
+    { id: "CSM", name: 'Chicken Sandwich Meal', price: 13.99, img: 'CSMeal.png' },
+    { id: "CTM", name: 'Chicken Tender Meal', price: 12.99, img: 'CTMeal.png' },
+    { id: "CHS", name: 'Chicken Salad', price: 6.99, img: 'Salad.png' },
+    { id: "FDR", name: 'Fountain Drink', price: 1.99, img: 'Drink.png' },
+    { id: "FFR", name: 'French Fries', price: 2.99, img: 'Fries.png' },
+    { id: "ICR", name: 'Ice Cream', price: 3.99, img: 'IceCream.png' },
   ];
 
   const addItemToOrder = (item) => {
@@ -50,7 +50,7 @@ function Order() {
 
   const TestDB = async () => {
     try {
-        const response = await axios.post('http://172.25.48.31:5000/start-function');
+        const response = await axios.post('http://172.19.155.78/start-function');
         console.log(response.data.message); // Logs "Function executed successfully!"
     } catch (error) {
         console.error('Error calling the backend:', error);
@@ -66,7 +66,7 @@ function Order() {
     }));
 
     try {
-      const response = await axios.post('http://172.25.48.31:5000/place-order', {
+      const response = await axios.post('http://172.19.155.78:5000/place-order', {
         count: count, //total price
         location: location,
         paymentMethod: paymentMethod,
