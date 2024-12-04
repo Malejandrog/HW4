@@ -151,7 +151,6 @@ app.post('/login-function', async (req, res) => {
 app.post('/place-order', async (req, res) => {
   const { count, location, paymentMethod, cardNumber, ccv, expDate, tip, items } = req.body;
 
-// Retrieve the global variables
   const customerID = loggedInCustomerID;
   const customerEmail = loggedInCustomerEmail;
   const customerAddress = loggedInCustomerAddress;
@@ -159,58 +158,45 @@ app.post('/place-order', async (req, res) => {
   const customerBank = LoggedInCustomerAccountNumber;
   const tipNumber = parseFloat(tip);
 
-  // Ensure the user is logged in
-  console.log('Test Message 1');
-
   if (!customerEmail) {
-    console.log('Test Message 2');
     return res.status(400).json({ message: 'User not logged in.' });
   }
 
-  console.log('Test Message 3');
-
-  // Ensure the necessary fields are present
   if (!count || !location || !paymentMethod || !cardNumber || !ccv || !expDate || !tip || !items || !Array.isArray(items)) {
-    console.log('Test Message 4');
     return res.status(401).json({ message: 'Field Missing.' });
   }
 
-  console.log('Test Message 5');
+  const client = await pool.connect(); // Get a client connection for transaction
 
   try {
+    await client.query('BEGIN'); // Start the transaction
+
     const totalAmount = parseFloat((count * 1.0825 + tipNumber).toFixed(2));
     const taxAmount = parseFloat((count * 0.0825).toFixed(2));
 
-    // Insert the order into the database
-    const orderResult = await pool.query(
+    const orderResult = await client.query(
       `INSERT INTO OrderInfo (LocationID, CustomerID, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod) 
        VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6) RETURNING OrderID`,
       [location, customerID, totalAmount, taxAmount, tipNumber, paymentMethod]
     );
     const orderID = orderResult.rows[0].orderid;
-    console.log('OrderInfo Updated');
-    
-    const balanceResult = await pool.query(
+
+    const balanceResult = await client.query(
       `SELECT Balance FROM BankAccount WHERE CustomerID = $1`,
       [customerID]
     );
-    
-    // Check if a balance was retrieved
-    if (balanceResult.rows.length > 0) {
-      // Extract the balance from the result
-      let customerBalance = parseFloat(balanceResult.rows[0].balance); // Ensure balance is a float
 
-      // Check if the customer has sufficient funds
+    if (balanceResult.rows.length > 0) {
+      let customerBalance = parseFloat(balanceResult.rows[0].balance);
+
       if (customerBalance < totalAmount) {
         throw new Error('Insufficient funds.');
       }
 
-      // Deduct the total amount from the balance and fix to 2 decimal points
       customerBalance -= totalAmount;
       customerBalance = parseFloat(customerBalance.toFixed(2));
 
-      // Update the balance in the database
-      await pool.query(
+      await client.query(
         `UPDATE BankAccount
         SET Balance = $1
         WHERE CustomerID = $2`,
@@ -220,56 +206,42 @@ app.post('/place-order', async (req, res) => {
       throw new Error('Customer balance not found.');
     }
 
-    await pool.query(
+    await client.query(
       `INSERT INTO PaymentInfo (OrderID, CustomerID, CreditCardNumber, CCV, ExpirationDate, BillingAddress)
        VALUES ($1, $2, $3, $4, $5, $6)`,
       [orderID, customerID, cardNumber, ccv, expDate, customerAddress]
     );
-    console.log('PaymentInfo Updated');
 
-    // Insert transaction information
-    await pool.query(
+    await client.query(
       `INSERT INTO TransactionInfo (OrderID, AccountNumber, LocationID, TransactionDate, PaymentAmount)
        VALUES ($1, $2, $3, CURRENT_DATE, $4)`,
       [orderID, customerBank, location, totalAmount]
     );
-    console.log('TransactionInfo Updated');
 
-    // Insert each item into the OrderHistory table
-    const client = await pool.connect(); // Begin transaction
-    try {
-      await client.query('BEGIN');
-
-      for (const item of items) {
-        console.log(item)
-        const { itemid, quantity } = item;
-        if (!itemid || !quantity) {
-          console.log(itemid, quantity)
-          throw new Error('Invalid item format.');
-        }
-
-        await client.query(
-          `INSERT INTO OrderHistory (OrderID, ItemID, ItemQuantity) 
-           VALUES ($1, $2, $3)`,
-          [orderID, itemid, quantity]
-        );
+    for (const item of items) {
+      const { itemid, quantity } = item;
+      if (!itemid || !quantity) {
+        throw new Error('Invalid item format.');
       }
 
-      await client.query('COMMIT');
-      console.log('OrderHistory Updated');
-    } catch (err) {
-      await client.query('ROLLBACK');
-      throw err;
-    } finally {
-      client.release();
+      await client.query(
+        `INSERT INTO OrderHistory (OrderID, ItemID, ItemQuantity) 
+         VALUES ($1, $2, $3)`,
+        [orderID, itemid, quantity]
+      );
     }
 
+    await client.query('COMMIT'); // End the transaction
     res.status(200).json({ message: 'Order placed successfully!' });
   } catch (error) {
+    await client.query('ROLLBACK'); // Rollback the transaction on error
     console.error('Error placing order:', error);
     res.status(500).json({ message: 'Internal server error.' });
+  } finally {
+    client.release(); // Release the client
   }
 });
+
 
 let LoggedInCustomerAccountNumber = null;
 
