@@ -52,7 +52,7 @@ function Order() {
     e.preventDefault();
     try {
       const response = await axios.post('http://172.19.155.78:5000/place-order', {
-        count: count,
+        count: count, //total price
         location: location,
         paymentMethod: paymentMethod,
         cardNumber: cardNumber,
@@ -195,7 +195,7 @@ function Order() {
 
           <p className='subtotal'><b>Subtotal: ${count.toFixed(2)}</b></p>
           <p className='tax'><b>Tax: ${(count * 0.0825).toFixed(2)}</b></p>
-          <p className='totalPrice'><b>Total Price: ${(count * 1.0825).toFixed(2)}</b></p>
+          <p className='totalPrice'><b>Total Price: ${(count * 1.0825 + (parseFloat(tip) || 0)).toFixed(2)}</b></p>
 
 
           <button className="orderButton" onClick={handlePlaceOrder}>Place Order</button>

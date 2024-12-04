@@ -100,6 +100,7 @@ app.post('/start-function', (req, res) => {
 let loggedInCustomerID = null;
 let loggedInCustomerEmail = null;
 let loggedInCustomerAddress = null;
+let loggedInCustomerName = null;
 
 // Login endpoint to authenticate users
 app.post('/login-function', async (req, res) => {
@@ -112,24 +113,29 @@ app.post('/login-function', async (req, res) => {
   try {
     // Query to check if the user exists with the provided credentials
     const result = await pool.query(
-      'SELECT CustomerID, CustomerEmail, CustomerAddress FROM Customer WHERE LOWER(CustomerEmail) = LOWER($1) AND CustomerPassword = $2',
+      'SELECT CustomerID, CustomerEmail, CustomerAddress, CustomerName FROM Customer WHERE LOWER(CustomerEmail) = LOWER($1) AND CustomerPassword = $2',
       [email, password]
     );
-
-    console.log(result.rows[0].customeremail);
 
     // If a match is found, return a success response
     if (result.rows.length > 0) {
       // Extract the user data
-      const { CustomerID, CustomerEmail, CustomerAddress } = result.rows[0];
+      const { CustomerID, CustomerEmail, CustomerAddress, CustomerName } = result.rows[0];
 
       // Store the logged-in user info in global variables
       loggedInCustomerID = result.rows[0].customerid;
       console.log('customerID:', loggedInCustomerID);
+
       loggedInCustomerEmail = result.rows[0].customeremail;
       console.log('customerEmail:', loggedInCustomerEmail);
+
+
       loggedInCustomerAddress = result.rows[0].customeraddress;
       console.log('customerAddress:', loggedInCustomerAddress);
+
+
+      loggedInCustomerName = result.rows[0].customername;
+      console.log('customerName:', loggedInCustomerName);
 
       res.status(200).json({ success: true, message: 'Login successful!' });
     } else {
@@ -149,6 +155,9 @@ app.post('/place-order', async (req, res) => {
   const customerID = loggedInCustomerID;
   const customerEmail = loggedInCustomerEmail;
   const customerAddress = loggedInCustomerAddress;
+  const customerName = loggedInCustomerName;
+  const customerBank = LoggedInCustomerAccountNumber;
+  const tipNumber = parseFloat(tip);
 
   // Ensure the user is logged in
   console.log('Test Message 1');
@@ -169,15 +178,31 @@ app.post('/place-order', async (req, res) => {
   console.log('Test Message 5');
 
   try {
-    const totalAmount = parseFloat((count * 1.0825).toFixed(2));
+    const totalAmount = parseFloat((count * 1.0825 + tipNumber).toFixed(2));
     const taxAmount = parseFloat((count * 0.0825).toFixed(2));
 
     // Insert the order into the database
-    await pool.query(
+    const orderResult = await pool.query(
       `INSERT INTO OrderInfo (LocationID, CustomerID, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod) 
-       VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6)`,
-      [location, customerID, totalAmount, taxAmount, tip, paymentMethod]
+       VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6) RETURNING OrderID`,
+      [location, customerID, totalAmount, taxAmount, tipNumber, paymentMethod]
     );
+    const orderID = orderResult.rows[0].orderid;
+    console.log('OrderInfo Updated');
+
+    await pool.query(
+      `INSERT INTO PaymentInfo (OrderID, CustomerID, CreditCardNumber, CCV, ExpirationDate, BillingAddress)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [orderID, customerID, cardNumber, ccv, expDate, customerAddress]
+    );
+    console.log('PaymentInfo Updated');
+
+    await pool.query(
+      `INSERT INTO TransactionInfo (OrderID, AccountNumber, LocationID, TransactionDate, PaymentAmount)
+       VALUES ($1, $2, $3, CURRENT_DATE, $4)`,
+      [orderID, customerBank, location, totalAmount]
+    );
+    console.log('TransactionInfo Updated');
 
     res.status(200).json({ message: 'Order placed successfully!' });
   } catch (error) {
@@ -186,10 +211,13 @@ app.post('/place-order', async (req, res) => {
   }
 });
 
+let LoggedInCustomerAccountNumber = null;
+
 app.post('/create-account',  async (req, res) => {
   console.log('Creating Account')
   const { name, address, city, state, phone, email, password, hasloyaltycard } = req.body;
   try {
+
     // Insert the account details into the database
     const result = await pool.query(
       `INSERT INTO Customer (CustomerName, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, CustomerPassword, HasLoyaltyCard) 
@@ -197,14 +225,29 @@ app.post('/create-account',  async (req, res) => {
        RETURNING CustomerID`,
       [name, address, city, state, phone, email, password, hasloyaltycard]
     );
+    console.log('Customer Tuple Created');
 
-    // Store the logged-in user info in global variables
-    loggedInCustomerID = result.rows[0].customerid;
-    console.log('customerID:', loggedInCustomerID);
-    loggedInCustomerEmail = email;
-    console.log('customerEmail:', loggedInCustomerEmail);
-    loggedInCustomerAddress = address;
-    console.log('customerAddress:', loggedInCustomerAddress);
+    let Accnumber = '';
+    for (let i = 0; i < 16; i++) {
+      Accnumber += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
+    }
+
+    LoggedInCustomerAccountNumber = Accnumber;
+
+    let Balnumber = '';
+    for (let i = 0; i < 4; i++) {
+      Balnumber += Math.floor(Math.random() * 10);
+    }
+
+    const accountType = Math.random() < 0.5 ? 'Checking' : 'Savings';
+
+    await pool.query(
+      `INSERT INTO BankAccount (AccountNumber, AccountHolderName, AccountType, Balance) 
+       VALUES ($1, $2, $3, $4)`,
+      [Accnumber, name, accountType, Balnumber]
+    );
+    console.log('BankAccount Tuple Created');
+
 
     res.status(200).json({ success: true, message: 'Account created successfully!' });
   } catch (error) {

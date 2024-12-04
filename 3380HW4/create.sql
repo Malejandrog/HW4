@@ -19,7 +19,7 @@ CREATE TABLE Customer (
 );
 
 CREATE TABLE BankAccount (
-    AccountNumber INT PRIMARY KEY,
+    AccountNumber BIGINT PRIMARY KEY,
     AccountHolderName VARCHAR(50),
     AccountType VARCHAR(50),
     Balance DECIMAL
@@ -48,23 +48,26 @@ CREATE TABLE OrderInfo ( --Changed from ERD due to Naming Conflict
 
 CREATE TABLE PaymentInfo (
     PaymentInfoID SERIAL PRIMARY KEY, --Made this serial instead of int
+    OrderID INT,
     CustomerID INT,
     CreditCardNumber VARCHAR(50),
     CCV INT,
-    ExpirationDate DATE, --Not Sure If this Should be DATE? VARCHAR?
+    ExpirationDate VARCHAR(5),
     BillingAddress VARCHAR(50),
-    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (OrderID) REFERENCES OrderInfo(OrderID)
 );
 
 CREATE TABLE TransactionInfo ( --Changed from ERD due to Possible Naming Conflict?
     TransactionID SERIAL PRIMARY KEY, --Made this serial instead of int
     OrderID INT,
-    AccountNumber INT, --Fixed from ERD? Said CustomerAccountID on ERD.
-    RestaurantAccountID INT, -- Modify later to be Foreign Key based on Tommy's requirements
+    AccountNumber BIGINT, --Fixed from ERD? Said CustomerAccountID on ERD.
+    LocationID VARCHAR(3), -- Modify later to be Foreign Key based on Tommy's requirements, Used to be RestaurantAccountID
     TransactionDate DATE,
     PaymentAmount DECIMAL,
     FOREIGN KEY (OrderID) REFERENCES OrderInfo(OrderID),
-    FOREIGN KEY (AccountNumber) REFERENCES BankAccount(AccountNumber)
+    FOREIGN KEY (AccountNumber) REFERENCES BankAccount(AccountNumber),
+    FOREIGN KEY (LocationID) REFERENCES RestaurantLocation(LocationID)
 );
 
 CREATE TABLE OrderHistory( --New Table
@@ -83,10 +86,10 @@ CREATE TABLE OrderHistory( --New Table
 
 
 -- Insert data into Customer
-/* INSERT INTO Customer (CustomerID, CustomerName, CustomerPassword, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, HasLoyaltyCard)
-VALUES
-    (1, 'Test', 'test', '123 Elm St', 'Houston', 'TX', '832-555-1234', 'Test@gmail.com', TRUE);
-    (2, 'Jane Smith', '456 Oak St', 'Austin', 'TX', '713-555-5678', 'JS@Gmail.com',FALSE),
+--INSERT INTO Customer (CustomerID, CustomerName, CustomerPassword, CustomerAddress, CustomerCity, CustomerState, CustomerPhoneNumber, CustomerEmail, HasLoyaltyCard)
+--VALUES
+    --(1, 'Test', 'test', '123 Elm St', 'Houston', 'TX', '832-555-1234', 'Test@gmail.com', TRUE);
+   /* (2, 'Jane Smith', '456 Oak St', 'Austin', 'TX', '713-555-5678', 'JS@Gmail.com',FALSE),
     (3, 'Michael Johnson', '789 Pine St', 'Dallas', 'TX', '713-555-8765', 'MJ@Gmail.com', TRUE),
     (4, 'Emily Davis', '101 Maple St', 'San Antonio', 'TX', '832-555-4321', 'ED@Gmail.com', FALSE); */
 
@@ -116,17 +119,17 @@ VALUES
 /* INSERT INTO OrderInfo (OrderID, LocationID, CustomerID, OrderDate, TotalAmount, TaxAmount, TipAmount, PaymentMethod)
 VALUES
     (1, 'HOU', 1, '2024-11-15', 50.00, 5.00, 10.00, 'Credit Card'),
-    (2, 'SAT', 2, '2024-11-16', 75.00, 7.50, 15.00, 'Cash'),
+    (2, 'SAT', 2, '2024-11-16', 75.00, 7.50, 15.00, 'Gift Card'),
     (3, 'NYC', 3, '2024-11-17', 100.00, 10.00, 20.00, 'Credit Card'),
     (4, 'HOU', 4, '2024-11-18', 25.00, 2.50, 5.00, 'Debit Card'); */
 
 -- Insert data into PaymentInfo
 /* INSERT INTO PaymentInfo (PaymentInfoID, CustomerID, CreditCardNumber, CCV, ExpirationDate, BillingAddress)
 VALUES
-    (1, 10, '1111 1111 1111 1111', 123, '2025-12-31', '123 Elm St'),
-    (2, 23, '2222 2222 2222 2222', 456, '2026-11-30', '456 Oak St'),
-    (3, 38, '3333 3333 3333 3333', 789, '2027-10-31', '789 Pine St'),
-    (4, 41, '4444 4444 4444 4444', 321, '2028-09-30', '101 Maple St'); */
+    (1, 10, '1111111111111111', 123, '12/34', '123 Elm St'),
+    (2, 23, '2222222222222222', 456, '11/21', '456 Oak St'),
+    (3, 38, '3333333333333333', 789, '10/20', '789 Pine St'),
+    (4, 41, '4444444444444444', 321, '9/99', '101 Maple St'); */
 
 -- Insert data into TransactionInfo
 /* INSERT INTO TransactionInfo (TransactionID, OrderID, AccountNumber, RestaurantAccountID, TransactionDate, PaymentAmount)

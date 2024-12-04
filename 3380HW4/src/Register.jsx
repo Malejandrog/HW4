@@ -31,7 +31,7 @@ const Register = () => {
   
       if (response.data.success) {
         console.log('User Created:', response.data.message);
-        navigate('/Order'); // Use navigate to redirect to /Order
+        navigate('/'); // Use navigate to redirect to Login
       } else {
         setError('Invalid details. Please try again.');
       }

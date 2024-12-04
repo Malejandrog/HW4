@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // Send a POST request to the /api/login endpoint
-      const response = await axios.post('http://172.19.155.78 :5000/login-function', {
+      const response = await axios.post('http://172.19.155.78:5000/login-function', {
         email: email,
         password: password,
       });
@@ -65,12 +65,6 @@ const Login = () => {
           </ChakraLink>
         </Text>
 
-        <Text>
-          or{' '}
-          <ChakraLink as={RouterLink} to="/Order" color="blue.500">
-            to Order Form
-          </ChakraLink>
-        </Text>
       </div>
     </>
   );
